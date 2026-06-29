@@ -78,7 +78,7 @@ The system consists of 6 independent modules that work together to evaluate ever
 
 ```bash
 # Clone the repository
-git clone https://github.com/ssedaqui-rgb/safeaction-ai.git
+git clone https://github.com/hafirhalima00-coder/safeaction-ai.git
 cd safeaction-ai
 
 # Install dependencies

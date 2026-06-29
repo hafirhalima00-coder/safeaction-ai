@@ -11,7 +11,9 @@ import {
   calculateConfidence,
   makeFinalDecision,
 } from '@/lib/decision';
-import { saveDecision } from '@/lib/db/sqlite';
+
+// In-memory storage for decisions (for serverless)
+const decisions: DecisionRecord[] = [];
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,25 +28,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Run all decision engine modules in sequence
-    // Step 1: Analyze intent
     const intent = analyzeIntent(actionRequest);
-
-    // Step 2: Evaluate policies
     const policy = evaluatePolicies(intent);
-
-    // Step 3: Check permissions
     const permission = checkPermissions(userId, intent);
-
-    // Step 4: Calculate risk
     const risk = calculateRisk(intent);
-
-    // Step 5: Calculate confidence
     const confidence = calculateConfidence(intent, policy, permission, risk);
-
-    // Step 6: Make final decision
     const final = makeFinalDecision(policy, permission, risk, confidence);
 
-    // Create the decision report
     const report: DecisionReport = {
       id: generateId(),
       timestamp: new Date(),
@@ -57,11 +47,11 @@ export async function POST(request: NextRequest) {
       final,
     };
 
-    // Save to database
+    // Save to in-memory storage
     const decisionRecord: DecisionRecord = {
       id: report.id,
       userId: report.userId,
-      userName: 'User', // Will be populated from user lookup
+      userName: 'User',
       rawInput: actionRequest,
       actionType: intent.actionType,
       target: intent.target || '',
@@ -72,7 +62,7 @@ export async function POST(request: NextRequest) {
       createdAt: new Date(),
     };
 
-    saveDecision(decisionRecord);
+    decisions.push(decisionRecord);
 
     return NextResponse.json({ report });
   } catch (error) {

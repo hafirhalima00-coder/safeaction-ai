@@ -453,5 +453,5 @@ MIT License - See [LICENSE](LICENSE) for details.
 ---
 
 <p align="center">
-  <strong>Built with ❤️ using Next.js 15 + TypeScript</strong>
+  <strong>build by Halima Hafir · Built with ❤️ using Next.js 15 + TypeScript</strong>
 </p>
